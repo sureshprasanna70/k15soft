@@ -1,7 +1,5 @@
 import bs4 
 import requests
-import feedparser
-from xml.dom import minidom
 import re
 def parseRSS(rssURL):
             indivdualPage=requests.get(rssURL);
@@ -16,7 +14,6 @@ def gettheNews(newsLink):
             articlePiece=soup.findAll('p',{"class":"body"})
             for article in articlePiece:
                 print article.renderContents()
-
 
     except Exception,e:
        print str(e)
