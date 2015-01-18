@@ -1,20 +1,22 @@
 import bs4
 import requests
-import re
+import feedparser
 import json
 def parseRSS(rssURL):
-            indivdualPage=requests.get(rssURL);
-            links = re.findall(r'<link>(.*?)</link>',indivdualPage.text)
-            for link in links:
+            indivdualPage=feedparser.parse(rssURL);
+            for inds in indivdualPage.entries:
+                date=inds.published
+                link=inds.links[0]['href']
                 if link != "http://www.thehindu.com/":
                     print link
-                    gettheNews(link)
-def gettheNews(newsLink):
+                    print date
+                    gettheNews(link,date)
+def gettheNews(newsLink,date):
     try:
             contents="";
             newsArticle=requests.get(newsLink)
             soup=bs4.BeautifulSoup(newsArticle.text)
-            articlePieces=soup.findAll('p',{"class":"body"})
+            articlePieces=soup.find_all('p',"body")
             for article in articlePieces:
                 contents+=article.renderContents()
             print contents
