@@ -1,22 +1,26 @@
-import bs4 
+import bs4
 import requests
 import re
+import json
 def parseRSS(rssURL):
             indivdualPage=requests.get(rssURL);
             links = re.findall(r'<link>(.*?)</link>',indivdualPage.text)
             for link in links:
                 if link != "http://www.thehindu.com/":
+                    print link
                     gettheNews(link)
 def gettheNews(newsLink):
     try:
+            contents="";
             newsArticle=requests.get(newsLink)
             soup=bs4.BeautifulSoup(newsArticle.text)
-            articlePiece=soup.findAll('p',{"class":"body"})
-            for article in articlePiece:
-                print article.renderContents()
-
+            articlePieces=soup.findAll('p',{"class":"body"})
+            for article in articlePieces:
+                contents+=article.renderContents()
+            print contents
     except Exception,e:
        print str(e)
+
 def main():
         page = 'http://www.thehindu.com/navigation/?type=rss'
         response = requests.get(page)
