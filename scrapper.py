@@ -8,18 +8,18 @@ def parseRSS(rssURL):
                 date=inds.published
                 link=inds.links[0]['href']
                 if link != "http://www.thehindu.com/":
-                    print link
-                    print date
                     gettheNews(link,date)
 def gettheNews(newsLink,date):
     try:
             contents="";
+            blacklist=["b","i","u"]
             newsArticle=requests.get(newsLink)
             soup=bs4.BeautifulSoup(newsArticle.text)
-            articlePieces=soup.find_all('p',"body")
+            articlePieces=soup.find_all('p',"body") 
             for article in articlePieces:
-                contents+=article.renderContents()
+                contents+=article.get_text()
             print contents
+            print date
     except Exception,e:
        print str(e)
 
