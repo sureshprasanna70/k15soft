@@ -18,8 +18,11 @@ def gettheNews(newsLink,date):
             articlePieces=soup.find_all('p',"body") 
             for article in articlePieces:
                 contents+=article.get_text()
-            print contents
-            print date
+            if contents=="":
+                print "no content"
+            else:
+                print contents
+                print date
     except Exception,e:
        print str(e)
 
