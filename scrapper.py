@@ -3,6 +3,7 @@ import requests
 import feedparser
 import json
 import hashlib
+import urllib
 def parseRSS(rssURL):
             indivdualPage=feedparser.parse(rssURL);
             for inds in indivdualPage.entries:
@@ -22,13 +23,23 @@ def gettheNews(newsLink,date):
             if contents=="":
                 print "no content"
             else:
-               getSha1(contents,date)
+               getTaxonomy(contents,date)
     except Exception,e:
        print str(e)
-def getSha1(contents,date):
-    print hashlib.sha1(contents).hexdigest()
-    print contents
-    print date
+def getTaxonomy(contents,date):
+    yahoourl='https://query.yahooapis.com/v1/public/yql?q='
+    yahooquery='select * from contentanalysis.analyze where text="'
+    dupcontents=contents
+    querywithtext=yahooquery+" ".join(dupcontents.split())+'"'
+    #print urllib.quote(querywithtext)
+    urlwithquery=yahoourl+querywithtext+"&format=json"
+    taxo=requests.get(urlwithquery)
+    taxojson=json.loads(taxo.text)
+    for each in taxojson:
+        print each
+    #print hashlib.sha1(contents).hexdigest()
+    #print contents
+    #print date
 def main():
         page = 'http://www.thehindu.com/navigation/?type=rss'
         response = requests.get(page)
