@@ -1,3 +1,5 @@
-#To do
-**push to es**
-**build query**
+#To do<br>
+**push to es**<br>
+**build query**<br>
+**expose api**<br>
+**add a demo page**
