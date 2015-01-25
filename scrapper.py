@@ -37,7 +37,10 @@ def getTaxonomy(contents,date):
     for each in taxojson:
         entitiesarray=taxojson['query']['results']['entities']['entity']
         for entities in entitiesarray:
-            print entities
+            print entities['score']
+            print entities['text']['content']
+            if "wiki_url" in entities:
+                print entities['wiki_url']
     #print hashlib.sha1(contents).hexdigest()
     #print contents
     #print date
