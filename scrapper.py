@@ -31,12 +31,13 @@ def getTaxonomy(contents,date):
     yahooquery='select * from contentanalysis.analyze where text="'
     dupcontents=contents
     querywithtext=yahooquery+" ".join(dupcontents.split())+'"'
-    #print urllib.quote(querywithtext)
     urlwithquery=yahoourl+querywithtext+"&format=json"
     taxo=requests.get(urlwithquery)
     taxojson=json.loads(taxo.text)
     for each in taxojson:
-        print each
+        entitiesarray=taxojson['query']['results']['entities']['entity']
+        for entities in entitiesarray:
+            print entities
     #print hashlib.sha1(contents).hexdigest()
     #print contents
     #print date
