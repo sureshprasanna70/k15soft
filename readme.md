@@ -1,3 +1,3 @@
 **To do**
-*push to es
-*build query
+#push to es
+#build query
