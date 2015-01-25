@@ -4,6 +4,7 @@ import feedparser
 import json
 import hashlib
 import urllib
+from dateutil.parser import parse
 def parseRSS(rssURL):
             indivdualPage=feedparser.parse(rssURL);
             for inds in indivdualPage.entries:
@@ -41,6 +42,10 @@ def getTaxonomy(contents,date):
             print entities['text']['content']
             if "wiki_url" in entities:
                 print entities['wiki_url']
+    pubdate=parse(date).date()
+    date=pubdate.strftime("%Y-%m-%d")
+    print date
+    #print datetime.strptime(pubdate,'%Y%m%d')
     #print hashlib.sha1(contents).hexdigest()
     #print contents
     #print date
