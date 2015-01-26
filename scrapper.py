@@ -23,7 +23,9 @@ def getthenews(newslink,date):
             for article in articlepieces:
                 contents+=(article.get_text()).encode('utf8')
             if contents=="":
+                print newslink
                 print "no content"
+                doc=""
             else:
                get_taxonomy(contents,date,newslink)
     except Exception,e:
@@ -72,9 +74,30 @@ def sendtoes(newsid,contents,date,taxonomy,link):
     news['url']=link
     news['published']=date
     news['taxonomy']=taxonomy
+    news['article']=contents
     doc['news']=news
     res=es.index(index="hindu",doc_type="news",id=newsid,body=doc)
-    print res
+    filewriter(newsid,doc,res,link)
+def filewriter(newsid,doc,res,link):
+    path=""
+    logstring=""
+    try:
+        path="dump/"+newsid
+        f=open(path,'w')
+        f.write(str(doc))
+        f.close()
+        print "Dump closed"
+    except Exception,e:
+        print "Dump writing failed"
+    try:
+        lf=open("result","a")
+        logstring=newsid+"   "+str(res['created'])+"   "+link+"\n";
+        print logstring
+        lf.write(logstring)
+        lf.close()
+        print "Log written"
+    except Exception,e:
+        print "Log writting failed"+str(e)
 def main():
         page = 'http://www.thehindu.com/navigation/?type=rss'
         response = requests.get(page)
