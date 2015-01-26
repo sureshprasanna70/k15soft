@@ -5,6 +5,7 @@ import json
 import hashlib
 import urllib
 from dateutil.parser import parse
+from elasticsearch import Elasticsearch
 def parseRSS(rssURL):
             indivdualpage=feedparser.parse(rssURL);
             for inds in indivdualpage.entries:
@@ -40,28 +41,39 @@ def get_taxonomy(contents,date,newslink):
         date=pubdate.strftime("%Y-%m-%d")
         for each in taxojson:
             entitiesarray=taxojson['query']['results']['entities']['entity']
+            taxonomy={}
+            i=1
             for entities in entitiesarray:
-                taxonomy={}
-                taxonomy['score']=entities['score']
-                taxonomy['name']=entities['text']['content']
+                singleentity={}
+                singleentity['score']=entities['score']
+                singleentity['name']=entities['text']['content']
                 if "wiki_url" in entities:
                     try:
-                        taxonomy['url']=entities['wiki_url']
+                        singleentity['url']=entities['wiki_url']
                     except Exception,e:
-                        taxonomy['url']='nil'
+                        singleentity['url']='nil'
                 if 'types' in entities:
-                    try:
-                        taxonomy['ent_type']=entities['types']['type']['content']
-                    except Exception,e:
-                        taxonomy['ent_type']='nil'
-
-        sendtoes(hashlib.sha1(contents).hexdigest(),contents,date,taxonomy,newslink)
+                    for details in entities['types']:
+                       print "details"
+                       try:
+                           singleentity['ent_type']=details['content']
+                       except Exception,e:
+                           singleentity['ent_type']='nil'
+                key_string="entity"+str(i)
+                taxonomy[key_string]=singleentity
+                i=i+1
+        sendtoes(hashlib.sha1(newslink).hexdigest(),contents,date,taxonomy,newslink)
     except Exception,e:
         print "YQL fails"
 def sendtoes(index,contents,date,taxonomy,link):
-    print date
-    print link
-    print taxonomy
+    doc={}
+    news={}
+    es=Elasticsearch()
+    news['url']=link
+    news['published']=date
+    news['taxonomy']=taxonomy
+    doc['news']=news
+    print doc
 '''
 Sample json doc for es
 {"news": {"url":"http://www.google.com","article":"It is great","published":"2015-01-25","taxonomy":{"entity1": {"name": "Obama","score":0.1},"entity2": { "name": "Michelle","score": 0}}}}
