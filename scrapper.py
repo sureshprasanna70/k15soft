@@ -86,7 +86,6 @@ def filewriter(newsid,doc,res,link):
         f=open(path,'w')
         f.write(str(doc))
         f.close()
-        print "Dump closed"
     except Exception,e:
         print "Dump writing failed"
     try:
@@ -95,7 +94,6 @@ def filewriter(newsid,doc,res,link):
         print logstring
         lf.write(logstring)
         lf.close()
-        print "Log written"
     except Exception,e:
         print "Log writting failed"+str(e)
 def main():
