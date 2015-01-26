@@ -4,7 +4,7 @@ POST /hindu/
    "mappings": {
       "news": {
          "_source": {
-            "enabled": false
+            "enabled": true
          },
          "properties": {
             "url": {
@@ -24,33 +24,57 @@ POST /hindu/
                "properties": {
                   "entity1": {
                      "type": "nested",
-                     "properties": { 
-                     "name": {
-                        "type": "string",
-                        "index": "analyzed"
-                     },
-                     "score": {
-                        "type": "float",
-                        "index": "analyzed"
+                     "properties": {
+                        "name": {
+                           "type": "string",
+                           "index": "analyzed"
+                        },
+                        "score": {
+                           "type": "float",
+                           "index": "analyzed"
+                        }
                      }
-                  }
                   },
                   "entity2": {
-                         "type": "nested",
-                         "properties": {
-                     "name": {
-                        "type": "string",
-                        "index": "analyzed"
-                     },
-                     "score": {
-                        "type": "float",
-                        "index": "analyzed"
+                     "type": "nested",
+                     "properties": {
+                        "name": {
+                           "type": "string",
+                           "index": "analyzed"
+                        },
+                        "score": {
+                           "type": "float",
+                           "index": "analyzed"
+                        }
                      }
-                  }
                   }
                }
             }
          }
       }
    }
+}
+PUT /hindu/news/5/
+{
+   
+      "news": {
+         
+            "url":"http://www.google.com",
+            "article":"It is great",
+            "published":"2015-01-25",
+            "taxonomy": {
+                     
+                  "entity1": {
+               
+                        "name": "Obama",
+                        "score": 0.1
+                  },
+                  "entity2": {
+                                       
+                        "name": "Michelle",
+                        "score": 0.2
+                     }
+                  }
+               
+            }
 }
