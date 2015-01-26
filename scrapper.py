@@ -43,29 +43,29 @@ def get_taxonomy(contents,date,newslink):
             entitiesarray=taxojson['query']['results']['entities']['entity']
             taxonomy={}
             i=1
-            for entities in entitiesarray:
-                singleentity={}
-                singleentity['score']=entities['score']
-                singleentity['name']=entities['text']['content']
-                if "wiki_url" in entities:
-                    try:
-                        singleentity['url']=entities['wiki_url']
-                    except Exception,e:
-                        singleentity['url']='nil'
-                if 'types' in entities:
-                    for details in entities['types']:
-                       print "details"
-                       try:
-                           singleentity['ent_type']=details['content']
-                       except Exception,e:
-                           singleentity['ent_type']='nil'
-                key_string="entity"+str(i)
-                taxonomy[key_string]=singleentity
-                i=i+1
+            if i <= 2: 
+                for entities in entitiesarray:
+                    singleentity={}
+                    singleentity['score']=entities['score']
+                    singleentity['name']=entities['text']['content']
+                    if "wiki_url" in entities:
+                            try:
+                                singleentity['url']=entities['wiki_url']
+                            except Exception,e:
+                                singleentity['url']='nil'
+                    if 'types' in entities:
+                            for details in entities['types']:
+                               try:
+                                   singleentity['ent_type']=details['content']
+                               except Exception,e:
+                                   singleentity['ent_type']='nil'
+                    key_string="entity"+str(i)
+                    taxonomy[key_string]=singleentity
+                    i=i+1
         sendtoes(hashlib.sha1(newslink).hexdigest(),contents,date,taxonomy,newslink)
     except Exception,e:
         print "YQL fails"
-def sendtoes(index,contents,date,taxonomy,link):
+def sendtoes(newsid,contents,date,taxonomy,link):
     doc={}
     news={}
     es=Elasticsearch()
@@ -73,11 +73,8 @@ def sendtoes(index,contents,date,taxonomy,link):
     news['published']=date
     news['taxonomy']=taxonomy
     doc['news']=news
-    print doc
-'''
-Sample json doc for es
-{"news": {"url":"http://www.google.com","article":"It is great","published":"2015-01-25","taxonomy":{"entity1": {"name": "Obama","score":0.1},"entity2": { "name": "Michelle","score": 0}}}}
-'''
+    res=es.index(index="hindu",doc_type="news",id=newsid,body=doc)
+    print res
 def main():
         page = 'http://www.thehindu.com/navigation/?type=rss'
         response = requests.get(page)
