@@ -89,7 +89,7 @@ def filewriter(newsid,doc,res,link):
     except Exception,e:
         print "Dump writing failed"
     try:
-        lf=open("result","a")
+        lf=open("dump/result","a")
         logstring=newsid+"   "+str(res['created'])+"   "+link+"\n";
         print logstring
         lf.write(logstring)
