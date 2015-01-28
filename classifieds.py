@@ -24,7 +24,7 @@ def openad(adlink):
         loc=ad.findAll('span', "attribVal newattribVal") 
         fullad['latlong']=getlatlong(loc[0].text)
     except Exception,e:
-        fullad['latlong']='nil']
+        fullad['latlong']='nil'
     try:
         desc = ad.find('div',id='ad_description')
         fullad['desc']=desc.text
