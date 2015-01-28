@@ -19,6 +19,7 @@ def getthenews(newslink,date):
             blacklist=["b","i","u"]
             newsarticle=requests.get(newslink)
             soup=bs4.BeautifulSoup(newsarticle.text)
+            title=soup.find('h1','detail-title').get_text()
             articlepieces=soup.find_all('p',"body") 
             for article in articlepieces:
                 contents+=(article.get_text()).encode('utf8')
@@ -27,10 +28,10 @@ def getthenews(newslink,date):
                 print "no content"
                 doc=""
             else:
-               get_taxonomy(contents,date,newslink)
+                get_taxonomy(title,contents,date,newslink)
     except Exception,e:
-       print "News fails"
-def get_taxonomy(contents,date,newslink):
+       print "News fails  "+str(e)
+def get_taxonomy(title,contents,date,newslink):
     yahoourl='https://query.yahooapis.com/v1/public/yql?q='
     yahooquery='select * from contentanalysis.analyze where text="'
     dupcontents=contents
@@ -64,14 +65,15 @@ def get_taxonomy(contents,date,newslink):
                     key_string="entity"+str(i)
                     taxonomy[key_string]=singleentity
                     i=i+1
-        sendtoes(hashlib.sha1(newslink).hexdigest(),contents,date,taxonomy,newslink)
+        sendtoes(hashlib.sha1(newslink).hexdigest(),title,contents,date,taxonomy,newslink)
     except Exception,e:
-        print "YQL fails"
-def sendtoes(newsid,contents,date,taxonomy,link):
+        print "YQL fails "+str(e)
+def sendtoes(newsid,title,contents,date,taxonomy,link):
     doc={}
     news={}
     es=Elasticsearch()
     news['url']=link
+    news['title']=title
     news['published']=date
     news['taxonomy']=taxonomy
     news['article']=contents
