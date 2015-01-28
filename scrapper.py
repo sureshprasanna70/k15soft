@@ -24,9 +24,9 @@ def getthenews(newslink,date):
             for article in articlepieces:
                 contents+=(article.get_text()).encode('utf8')
             if contents=="":
-                print newslink
+                res['created']=False
+                filewriter("1","no contents",res,newslink)
                 print "no content"
-                doc=""
             else:
                 get_taxonomy(title,contents,date,newslink)
     except Exception,e:
