@@ -13,21 +13,36 @@ def main():
 def openad(adlink):
     adresponse=requests.get(adlink)
     ad=bs4.BeautifulSoup(adresponse.text)
-    adtitle=ad.find('h1','ad_title')
-    areas=ad.findAll('ul',id="attrib-vertical-gallery")
-    loc=ad.findAll('span', "attribVal newattribVal")
-    desc = ad.find('div',id='ad_description')
-    contact=ad.find('span','NoVerified-Text')
-    print adlink
-    print adtitle.text
-    print contact.text
-    latlong=getlatlong(loc[0].text)
-    #print desc.text
-
+    fullad={}
+    try:
+        adtitle=ad.find('h1','ad_title')
+        fullad['title']=adtitle.text
+    except Exception,e:
+        fulladd['title']='nil'
+    try:
+        areas=ad.findAll('ul',id="attrib-vertical-gallery")
+        loc=ad.findAll('span', "attribVal newattribVal") 
+        fullad['latlong']=getlatlong(loc[0].text)
+    except Exception,e:
+        fullad['latlong']='nil']
+    try:
+        desc = ad.find('div',id='ad_description')
+        fullad['desc']=desc.text
+    except Exception,e:
+        fullad['desc']='nil'
+    try:
+        contact=ad.find('span','NoVerified-Text')
+        fullad['contact']=contact.text
+    except,Exception,e:
+        fullad['contact']='nil'
+    print fullad
 def getlatlong(loc):
-    googleurl="https://maps.googleapis.com/maps/api/geocode/json?address="+loc
-    locresponse=requests.get(googleurl)
-    locjson=json.loads(locresponse.text)
-    return locjson['results'][0]['geometry']['location']
+    try:
+        googleurl="https://maps.googleapis.com/maps/api/geocode/json?address="+loc
+        locresponse=requests.get(googleurl)
+        locjson=json.loads(locresponse.text)
+        return locjson['results'][0]['geometry']['location']
+    except Exception,e:
+        print str(e)
     
 main()
